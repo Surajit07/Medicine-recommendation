@@ -1,0 +1,28 @@
+# Ignore environment files
+.env
+
+# Ignore machine learning model files
+svc.pkl
+
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore virtual environment
+.venv/
+venv/
+
+# Ignore Jupyter notebook checkpoints (if using Jupyter)
+.ipynb_checkpoints/
+
+# Ignore datasets (optional, if you don’t want to upload them)
+datasets/
+
+# Ignore system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore logs and temporary files
+*.log
+*.tmp
