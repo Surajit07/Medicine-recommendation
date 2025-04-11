@@ -6,6 +6,7 @@ import uvicorn
 from pydantic import BaseModel
 from typing import List
 from fastapi.middleware.cors import CORSMiddleware
+from deep_translator import GoogleTranslator
 
 
 
@@ -56,6 +57,15 @@ app.add_middleware(
 # API endpoint for predicting disease
 class SymptomsInput(BaseModel):
     symptoms: List[str]
+    lang: str= "en"
+
+# from deep_translator import GoogleTranslator
+
+def translate_to_hindi(text: str) -> str:
+    return GoogleTranslator(source='auto', target='hi').translate(text)
+
+def translate_list_to_hindi(items: List[str]) -> List[str]:
+    return [translate_to_hindi(item) for item in items]
 
 
 
@@ -64,10 +74,18 @@ def predict_disease(data:SymptomsInput):
     predicted_disease = get_predicted_value(data.symptoms)
     desc, pre, med, die = helper(predicted_disease)
 
+    # Convert nested precautions list to flat list of strings
+    pre_flat = [item for sublist in pre for item in sublist]
+
+    # Translate if language is Hindi
+    if data.lang == "hi":
+        desc = translate_to_hindi(desc)
+        pre_flat = translate_list_to_hindi(pre_flat)
+
     return {
         "predicted_disease": predicted_disease,
         "description": desc,
-        "precautions": pre,
+        "precautions": pre_flat,
         "medications": med,
         "diets": die,
     }

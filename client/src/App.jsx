@@ -12,6 +12,7 @@ import {
   Shield,
   Coffee,
   Pill,
+  Languages,               //this is new part
 } from "lucide-react";
 
 // Custom UI Components
@@ -56,6 +57,7 @@ const App = () => {
   const [inputText, setInputText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [language, setLanguage] = useState("en");             //this is new part
 
   // Function to handle typing input and show suggestions
   const handleInputChange = (event) => {
@@ -93,6 +95,7 @@ const App = () => {
       // Send the selected symptoms in correct format
       const response = await axios.post("http://127.0.0.1:8080/predict", {
         symptoms: selectedSymptoms, // Ensure this is an array
+        lang: language,                     //this is new part
       });
 
       // Set the prediction result
@@ -103,6 +106,7 @@ const App = () => {
       setPrediction({ error: "Failed to fetch prediction" });
       setIsLoading(false);
     }
+
   };
 
   return (
@@ -114,6 +118,27 @@ const App = () => {
             Medicine Recommendation System
           </h1>
         </div>
+
+
+                                          {/* this is new part */}
+
+        {/* Add Language Selector */}
+        <div className="mb-6 flex justify-end">
+          <div className="relative w-40">
+            <div className="flex items-center bg-gray-700 rounded-lg border border-gray-600">
+              <Languages className="ml-3 text-gray-400" size={18} />
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="w-full p-3 bg-gray-700 text-white border-none rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+              </select>
+            </div>
+          </div>
+        </div>
+                                          {/* // this is new part */}
 
         <div className="grid gap-8 md:grid-cols-2">
           {/* Input Section */}
@@ -270,7 +295,8 @@ const App = () => {
                     Precautions
                   </h3>
                   <ul className="space-y-1 text-sm text-gray-300">
-                    {prediction.precautions?.[0]?.map((precaution, index) => (
+                    {/* {prediction.precautions?.[0]?.map((precaution, index) => ( */}
+                    {prediction.precautions?.map((precaution, index) => (
                       <li key={index} className="flex items-start">
                         <span className="mr-2 text-green-400">•</span>
                         {precaution}
@@ -285,9 +311,17 @@ const App = () => {
                     <Pill className="mr-2" size={16} />
                     Medications
                   </h3>
-                  <p className="text-sm text-gray-300">
+                  {/* <p className="text-sm text-gray-300">
                     {prediction.medications?.[0]}
-                  </p>
+                  </p> */}
+                  <ul className="space-y-1 text-sm text-gray-300">
+                    {prediction.medications?.map((medication, index) => (
+                      <li key={index} className="flex items-start">
+                        <span className="mr-2 text-green-400">•</span>
+                        {medication}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
 
                 <div>
@@ -295,9 +329,17 @@ const App = () => {
                     <Coffee className="mr-2" size={16} />
                     Diet Recommendations
                   </h3>
-                  <p className="text-sm text-gray-300">
+                  {/* <p className="text-sm text-gray-300">
                     {prediction.diets?.[0]}
-                  </p>
+                  </p> */}
+                  <ul className="space-y-1 text-sm text-gray-300">
+                    {prediction.diets?.map((diet, index) => (
+                      <li key={index} className="flex items-start">
+                        <span className="mr-2 text-green-400">•</span>
+                        {diet}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             )}
@@ -309,6 +351,7 @@ const App = () => {
 };
 
 export default App;
+
 
 //-------------------------------------------
 
